@@ -6,7 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}): super(key:key);
 
 
   @override
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Tugasku',
       theme: ThemeData(
         
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 196, 35, 218)),
+        primarySwatch: Colors.deepPurple,
         useMaterial3: true,
       ),
       home: HomePage(),
