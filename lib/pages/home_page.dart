@@ -12,6 +12,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late double _deviceHeight, _deviceWidth;
 
+  String? _newTaskContent;
+
   _HomePageState();
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: _taskList(),
+      floatingActionButton: _addTaskButton(),
     );
   }
 
@@ -46,5 +49,33 @@ class _HomePageState extends State<HomePage> {
         )
       ],
     );
+  }
+
+  Widget _addTaskButton() {
+    return FloatingActionButton(
+      onPressed: _displayTaskPopup,
+      child: Icon(
+        Icons.add,
+      ),
+      backgroundColor: Colors.indigoAccent,
+    );
+  }
+
+  void _displayTaskPopup() {
+    showDialog(
+        context: context,
+        builder: (BuildContext _context) {
+          return AlertDialog(
+            title: const Text("Add New Task"),
+            content: TextField(
+              onSubmitted: (_value) {},
+              onChanged: (_value) {
+                setState(() {
+                  _newTaskContent = _value;
+                });
+              },
+            ),
+          );
+        });
   }
 }
