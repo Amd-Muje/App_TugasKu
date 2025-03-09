@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   String? _newTaskContent;
   Box? _box;
 
-  _HomePageState();aaa
+  _HomePageState();
 
   @override
   void initState() {
@@ -68,19 +68,19 @@ class _HomePageState extends State<HomePage> {
         return ListTile(
           title: Text(
             task.content,
-            style:TextStyle(
-              decoration: task.done ? null : TextDecoration.lineThrough),
+            style: TextStyle(
+                decoration: task.done ? null : TextDecoration.lineThrough),
           ),
           subtitle: Text(task.timestamp.toString()),
           trailing: Icon(
-            task.done ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+            task.done
+                ? Icons.check_box_outlined
+                : Icons.check_box_outline_blank,
             color: Colors.blue,
           ),
         );
       },
-      );
-    
-    
+    );
   }
 
   Widget _addTaskButton() {
@@ -100,10 +100,22 @@ class _HomePageState extends State<HomePage> {
           return AlertDialog(
             title: const Text("Add New Task"),
             content: TextField(
-              onSubmitted: (_value) {},
+              onSubmitted: (_) {
+                if (_newTaskContent != null) {
+                  var _task = Task(
+                      content: _newTaskContent!,
+                      timestamp: DateTime.now(),
+                      done: false);
+                  _box!.add(_task.toMap());
+                  setState(() {
+                    _newTaskContent = null;
+                  });
+                }
+              },
               onChanged: (_value) {
                 setState(() {
                   _newTaskContent = _value;
+                  Navigator.pop(context);
                 });
               },
             ),
