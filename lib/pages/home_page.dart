@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:tugasku/models/task.dart';
 
 class HomePage extends StatefulWidget {
   HomePage();
@@ -13,8 +15,16 @@ class _HomePageState extends State<HomePage> {
   late double _deviceHeight, _deviceWidth;
 
   String? _newTaskContent;
+  Box? _box;
 
-  _HomePageState();
+  _HomePageState();aaa
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
@@ -28,27 +38,49 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(fontSize: 25),
         ),
       ),
-      body: _taskList(),
+      body: _taskView(),
       floatingActionButton: _addTaskButton(),
     );
   }
 
+  Widget _taskView() {
+    return FutureBuilder(
+      future: Hive.openBox('tasks'),
+      builder: (BuildContext _context, AsyncSnapshot _snapshot) {
+        if (_snapshot.connectionState == ConnectionState.done) {
+          _box = _snapshot.data;
+          return _taskList();
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
   Widget _taskList() {
-    return ListView(
-      children: [
-        ListTile(
-          title: const Text(
-            "Task 1",
-            style: TextStyle(decoration: TextDecoration.lineThrough),
+    // Task _newTask = Task(content: "Go to Gym", timestamp: DateTime.now(), done: false);
+    // _box?.add(_newTask.toMap());
+    List tasks = _box?.values.toList();
+    return ListView.builder(
+      itemCount: tasks.length,
+      itemBuilder: (BuildContext _context, int _index) {
+        var task = Task.fromMap(tasks[_index]);
+        return ListTile(
+          title: Text(
+            task.content,
+            style:TextStyle(
+              decoration: task.done ? null : TextDecoration.lineThrough),
           ),
-          subtitle: Text(DateTime.now().toString()),
+          subtitle: Text(task.timestamp.toString()),
           trailing: Icon(
-            Icons.check_box_outlined,
+            task.done ? Icons.check_box_outlined : Icons.check_box_outline_blank,
             color: Colors.blue,
           ),
-        )
-      ],
-    );
+        );
+      },
+      );
+    
+    
   }
 
   Widget _addTaskButton() {
